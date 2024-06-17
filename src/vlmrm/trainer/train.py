@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+os.environ['CURL_CA_BUNDLE'] = ''
 import signal
 import sys
 import traceback
