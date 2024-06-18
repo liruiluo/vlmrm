@@ -185,6 +185,13 @@ def dist_worker_compute_reward(
     ...
 
 
+def compute_rewards_from_similarity(similarities, alpha=1.0):
+    rewards = torch.zeros_like(similarities)
+    rewards[0] = similarities[0]  
+    for t in range(1, len(similarities)):
+        rewards[t] = similarities[t] + alpha * (similarities[t] - similarities[t-1])
+    return rewards
+
 def dist_worker_compute_reward(
     rank: int,
     reward_model: CLIPReward,
@@ -208,6 +215,7 @@ def dist_worker_compute_reward(
     with torch.no_grad():
         embeddings = reward_model.embed_module(worker_frames)
         rewards = reward_model(embeddings)
+        # rewards = compute_rewards_from_similarity(rewards)
 
     def zero_t():
         return torch.zeros_like(rewards)
