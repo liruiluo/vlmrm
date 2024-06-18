@@ -147,8 +147,9 @@ def train(config: str):
     logger.info(f"Command called: {command}")
     assert torch.cuda.is_available()
     util.set_egl_env_vars()
-
-    config_dict = yaml.load(config, Loader=yaml.FullLoader)
+    with open(config, 'r') as file:
+        config_dict = yaml.safe_load(file)
+    # config_dict = yaml.load(config, Loader=yaml.FullLoader)
     config_obj = Config(**config_dict)
 
     # When pickling the object, the __pydantic_serializer__ attribute gets lost.
