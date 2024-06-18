@@ -215,7 +215,7 @@ def dist_worker_compute_reward(
     with torch.no_grad():
         embeddings = reward_model.embed_module(worker_frames)
         rewards = reward_model(embeddings)
-        # rewards = compute_rewards_from_similarity(rewards)
+        rewards = compute_rewards_from_similarity(rewards)
 
     def zero_t():
         return torch.zeros_like(rewards)
