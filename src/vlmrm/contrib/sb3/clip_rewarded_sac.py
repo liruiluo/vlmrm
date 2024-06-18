@@ -116,7 +116,7 @@ class CLIPRewardedSAC(SAC):
         total_episodes = self._episode_num - self.previous_num_episodes
         env_episodes = total_episodes // self.env.num_envs
         assert self.config.rl.episode_length == env_episode_timesteps // env_episodes
-
+        # torch.Size([episode_length, n_envs_per_worker, x, x, 3])
         frames = torch.from_numpy(np.array(self.replay_buffer.render_arrays))
         frames = rearrange(frames, "n_steps n_envs ... -> (n_steps n_envs) ...")
         assert frames.shape[1:] == self.config.render_dim
@@ -127,11 +127,13 @@ class CLIPRewardedSAC(SAC):
             num_workers=self.config.rl.n_workers,
             worker_frames_tensor=self.worker_frames_tensor,
         )
+        # torch.Size([episode_length* n_envs_per_worker])
         rewards = rearrange(
             rewards,
             "(n_steps n_envs) ... -> n_steps n_envs ...",
             n_envs=self.config.rl.n_envs,
         ).numpy()
+        # torch.Size([episode_length, n_envs_per_worker])
         self.replay_buffer.clear_render_arrays()
 
         if replay_buffer_pos - env_episode_timesteps >= 0:
