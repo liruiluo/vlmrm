@@ -15,6 +15,7 @@ from vlmrm.envs.base import RENDER_DIM
 
 class Config(BaseModel):
     env_name: Literal["CartPole-v1", "Humanoid-v4", "MountainCarContinuous-v0"]
+    task_name: str
     base_path: pathlib.Path
     seed: int
     description: str
